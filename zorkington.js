@@ -45,12 +45,16 @@ console.log(currentRoom + "\n" + rooms[currentRoom]["description"])
 
 process.stdin.on('data', (chunk) => {
     let playerInput = chunk.toString().trim();
+    let firstWordOfInput = playerInput.split(' ').shift().toString()
     console.log("\n")
 
     if (potentialCommands.checkInventory.includes(playerInput)) {
         inventory()
     } else if (playerInput == "look around") {
         console.log(rooms[currentRoom]["description"] + " You see " + rooms[currentRoom]['inventory'] + ".")
+    } else if (potentialCommands.drop.includes(firstWordOfInput)){
+        drop(playerInput);
+
     } else if (currentRoom == "182 Main st.") {
 
         mainStActions(playerInput);
@@ -84,9 +88,9 @@ function take(itemFromAction) {
 }
 
 function mainStActions(playerInput) {
-    if (playerInput == "drop paper" || playerInput == "drop seven days") {
-        drop(playerInput)
-    } else if (potentialCommands.pickUpPaper.includes(playerInput)) {
+    // if (playerInput == "drop paper" || playerInput == "drop seven days") {
+    //     drop(playerInput) }
+     if (potentialCommands.pickUpPaper.includes(playerInput)) {
         take('Seven Days')
         
     } else if (playerInput == "read sign") {
@@ -111,9 +115,9 @@ function mainStActions(playerInput) {
 }
 
 function foyerActions(playerInput) {
-    if (playerInput == "drop paper" || playerInput == "drop seven days") {
-        drop(playerInput)
-    } else if (potentialCommands.pickUpPaper.includes(playerInput)) {
+    // if (playerInput == "drop paper" || playerInput == "drop seven days") {
+    //     drop(playerInput) }
+      if (potentialCommands.pickUpPaper.includes(playerInput)) {
         take('Seven Days')
     } else if (playerInput == "go back") {
         changeRoom("182 Main st.")
