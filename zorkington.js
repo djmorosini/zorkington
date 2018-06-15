@@ -20,14 +20,17 @@ potentialCommands = {
 
 let items = {
     'Seven Days': {
+        'alternate names':['paper', 'seven days', 'Seven Days','Paper', 'newspaper', 'days', 'Days'],
         'description': "Vermont's Alt-Weekly",
         'onPickUp': 'You pick up the paper and leaf through it looking for comics and ignoring the articles, just like everybody else does.'
             },
     'dog poop': {
+        'alternate names':['poop','shit', 'Poop', 'dog poop', 'turd'],
         'description': 'Brown. Smelly. Literal poop from a dog. I don\'t know what you were expecting.',
         'onPickUp': 'squish...',
     },
     'quarter':{
+        'alternate names':['quarter','change','money'],
         'description': '25 cents. Minted 1978. How is this still around?',
         'onPickUp': 'SWEET! 25 CENTS!'
     }
@@ -82,7 +85,7 @@ function take(itemFromAction) {
 
 function mainStActions(playerInput) {
     if (playerInput == "drop paper" || playerInput == "drop seven days") {
-        drop("Seven Days")
+        drop(playerInput)
     } else if (potentialCommands.pickUpPaper.includes(playerInput)) {
         take('Seven Days')
         
@@ -109,7 +112,7 @@ function mainStActions(playerInput) {
 
 function foyerActions(playerInput) {
     if (playerInput == "drop paper" || playerInput == "drop seven days") {
-        drop("Seven Days")
+        drop(playerInput)
     } else if (potentialCommands.pickUpPaper.includes(playerInput)) {
         take('Seven Days')
     } else if (playerInput == "go back") {
@@ -130,9 +133,15 @@ function inventory() {
     }
 }
 
-function drop(itemFromAction) {
-    if (playerInventory.includes(itemFromAction)) {
-        let itemIndex = playerInventory.indexOf(itemFromAction)
+function drop(playerInput) {
+    let itemName = playerInput.match(/[a-z]+$/i).toString()
+    for (item in items) {
+        if (items[item]['alternate names'].includes(itemName)){
+            itemName = item
+        }
+    }
+    if (playerInventory.includes(itemName)) {
+        let itemIndex = playerInventory.indexOf(itemName)
         let item = playerInventory.splice(itemIndex, 1).toString()
         rooms[currentRoom]["inventory"].push(item)
         console.log("You dropped " + item)
