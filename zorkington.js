@@ -12,7 +12,7 @@ let rooms = {
 }
 
 potentialCommands = {
-    pickUpPaper: ['Pick up paper', 'pick up paper', 'take paper', 'Take paper', 'Grab paper', 'grab paper', 'get paper', 'Get paper', 'Pick up seven days', 'pick up seven days', 'take seven days', 'Take seven days', 'Grab seven days', 'grab seven days', 'get seven days', 'Get seven days'],
+    take: ['Pick up', 'pick up', 'take', 'pick', 'Pick', 'Take', 'Grab', 'grab', 'get', 'Get'],
     drop: ['drop', 'Drop', 'Put down', 'put down', 'throw away', 'Throw away'],
     lookAt: ['Look at', 'Look', 'look', 'look at', 'examine', 'Examine'],
     checkInventory: ['i', 'I', 'Inventory','inventory', 'take inventory', 'Take inventory']
@@ -51,10 +51,11 @@ process.stdin.on('data', (chunk) => {
     if (potentialCommands.checkInventory.includes(playerInput)) {
         inventory()
     } else if (playerInput == "look around") {
-        console.log(rooms[currentRoom]["description"] + " You see " + rooms[currentRoom]['inventory'] + ".")
+        lookAround();
     } else if (potentialCommands.drop.includes(firstWordOfInput)){
         drop(playerInput);
-
+    } else if (potentialCommands.take.includes(firstWordOfInput)){
+        take(playerInput)
     } else if (currentRoom == "182 Main st.") {
 
         mainStActions(playerInput);
@@ -63,8 +64,16 @@ process.stdin.on('data', (chunk) => {
 
         foyerActions(playerInput);
     }
-    console.log(currentRoom)
+    console.log('Current location:' + currentRoom + '\n')
 });
+
+function lookAround() {
+    console.log(rooms[currentRoom]["description"])
+
+    if (rooms[currentRoom]['inventory'].length > 0){
+    console.log(" You see " + rooms[currentRoom]['inventory'] + ".");
+    }
+}
 
 function changeRoom(newRoom) {
     let validTransitions = rooms[currentRoom].canChangeTo;
@@ -76,22 +85,9 @@ function changeRoom(newRoom) {
     }
 }
 
-function take(itemFromAction) {
-    if (rooms[currentRoom]["inventory"].includes(itemFromAction)) {
-        let itemIndex = rooms[currentRoom]["inventory"].indexOf(itemFromAction)
-        let item = rooms[currentRoom]["inventory"].splice(itemIndex, 1).toString()
-        playerInventory.push(item)
-        console.log(items[item]['onPickUp'])
-    } else {
-        console.log("I can't take that now.")
-    }
-}
 
 function mainStActions(playerInput) {
-     if (potentialCommands.pickUpPaper.includes(playerInput)) {
-        take('Seven Days')
-        
-    } else if (playerInput == "read sign") {
+     if (playerInput == "read sign") {
         console.log('The sign says "Welcome to Burlington Code Academy! Come on up to the second floor. If the door is locked, use the code 12345."');
     } else if (playerInput == "take sign") {
         console.log("That would be selfish. How will other students find their way?");
@@ -102,7 +98,6 @@ function mainStActions(playerInput) {
     } else if (playerInput.startsWith('key in') || playerInput.startsWith('enter code')) {
         if (key == playerInput.match('12345')) {
             console.log('Success! The door opens. You enter the foyer and the door shuts behind you.');
-            doorLocked = false;
             changeRoom("182 Main St. - Foyer");
         } else {
             console.log('Bzzzzt! The door is still locked.');
@@ -115,9 +110,7 @@ function mainStActions(playerInput) {
 }
 
 function foyerActions(playerInput) {
-      if (potentialCommands.pickUpPaper.includes(playerInput)) {
-        take('Seven Days')
-    } else if (playerInput == "go back") {
+     if (playerInput == "go back") {
         changeRoom("182 Main st.")
     } else {
         console.log("Sorry, I don't know how to " + playerInput + ".");
@@ -152,24 +145,19 @@ function drop(playerInput) {
     }
 }
 
-// function take(desiredItem) {
-//     const roomInventory = rooms[currentRoom]['inventory'];
-
-//     if (roomInventory.includes(desiredItem)) {
-
-//         const itemFromRoom = roomInventory.splice(roomInventory.indexOf(desiredItem), 1).toString();
-//     playerInventory.push(itemFromRoom)
-//     console.log('' + desiredItem + ' was added to your inventory.')
-//     } else {
-//         console.log('There is no ' + desiredItem + ' here.')
-//     }
-    // while (rooms[currentRoom]['inventory'].length > rooms[currentRoom]['inventory'].indexOf(itemFromAction)){
-    //     tempInventoryArray.push(rooms[currentRoom]['inventory'].pop())
-    //     console.log(tempInventoryArray)
-    // }
-    // playerInventory.push(tempInventoryArray.pop())
-    // while (tempInventoryArray.length > 0) {
-    //     rooms[currentRoom]['inventory'].push(tempInventoryArray.pop())
-    //     console.log()
-    // }
-// }
+function take(playerInput) {
+    let itemName = playerInput.match(/[a-z]+$/i).toString()
+    for (item in items) {
+        if (items[item]['alternate names'].includes(itemName)){
+            itemName = item
+        }
+    }    
+    if (rooms[currentRoom]["inventory"].includes(itemName)) {
+        let itemIndex = rooms[currentRoom]["inventory"].indexOf(itemName)
+        let item = rooms[currentRoom]["inventory"].splice(itemIndex, 1).toString()
+        playerInventory.push(item)
+        console.log(items[item]['onPickUp'])
+    } else {
+        console.log("I can't take that now.")
+    }
+}
