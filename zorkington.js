@@ -88,8 +88,6 @@ function take(itemFromAction) {
 }
 
 function mainStActions(playerInput) {
-    // if (playerInput == "drop paper" || playerInput == "drop seven days") {
-    //     drop(playerInput) }
      if (potentialCommands.pickUpPaper.includes(playerInput)) {
         take('Seven Days')
         
@@ -109,14 +107,14 @@ function mainStActions(playerInput) {
         } else {
             console.log('Bzzzzt! The door is still locked.');
         }
+    } else if (playerInput === ''){
+        console.log('Please provide a command.')
     } else {
         console.log("Sorry, I don't know how to " + playerInput + ".");
     }
 }
 
 function foyerActions(playerInput) {
-    // if (playerInput == "drop paper" || playerInput == "drop seven days") {
-    //     drop(playerInput) }
       if (potentialCommands.pickUpPaper.includes(playerInput)) {
         take('Seven Days')
     } else if (playerInput == "go back") {
