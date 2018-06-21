@@ -3,6 +3,27 @@ let rooms = {
         canChangeTo: ["182 Main St. - Foyer"],
         'description': "You are standing on Main Street between Church and South Winooski. There is a door here. A keypad sits on the handle. On the door is a handwritten sign.",
         'inventory': ['dog poop', 'quarter'],
+        'interactible items': {   //I think it would be pretty easy to add interactable items to a room object and give them a description and a list of actions players can take with them (functions). Then we can build a 'look at item' function and it helps keep the room if else functions clean.
+            door: {
+                'description': 'The door is locked. There is a keypad on the handle.',
+                'open': function() {
+                    {
+                        console.log('The door is locked. There is a keypad on the handle. What will you enter into the keypad?');
+                        process.stdin.once('data', (code) => {
+                            code = code.toString().trim()
+                            console.log(code)
+                            if (key == code.match('12345')) {
+                                console.log('Success! The door opens. You enter the foyer and the door shuts behind you.');
+                                changeRoom("182 Main St. - Foyer");
+                            } else {
+                                console.log('Bzzzzt! The door is still locked.'); //still needs some debugging :(
+                            }
+                        })
+                    }
+                }
+            }
+            
+        }
     },
     '182 Main St. - Foyer': {
         canChangeTo: ["182 Main st."],
@@ -37,6 +58,7 @@ let items = {
 }
 
 let currentRoom = "182 Main st."
+let interactables = rooms[currentRoom]['interactible items'];
 let key = "12345"
 let doorLocked = true
 let playerInventory = []
@@ -44,6 +66,7 @@ let playerInventory = []
 console.log(currentRoom + "\n" + rooms[currentRoom]["description"])
 
 process.stdin.on('data', (chunk) => {
+    console.log('Current location: ' + currentRoom + '\n')
     let playerInput = chunk.toString().trim();
     let firstWordOfInput = playerInput.split(' ').shift().toString()
     console.log("\n")
@@ -64,7 +87,6 @@ process.stdin.on('data', (chunk) => {
 
         foyerActions(playerInput);
     }
-    console.log('Current location:' + currentRoom + '\n')
 });
 
 function lookAround() {
@@ -86,15 +108,14 @@ function changeRoom(newRoom) {
 }
 
 
+
 function mainStActions(playerInput) {
      if (playerInput == "read sign") {
         console.log('The sign says "Welcome to Burlington Code Academy! Come on up to the second floor. If the door is locked, use the code 12345."');
     } else if (playerInput == "take sign") {
         console.log("That would be selfish. How will other students find their way?");
-    } else if (playerInput == "open door") {
-        if (doorLocked) {
-            console.log('The door is locked. There is a keypad on the handle.');
-        }
+    } else if (playerInput == "open door") {    //Here's an example of calling that function on the door
+            interactables.door['open']()
     } else if (playerInput.startsWith('key in') || playerInput.startsWith('enter code')) {
         if (key == playerInput.match('12345')) {
             console.log('Success! The door opens. You enter the foyer and the door shuts behind you.');
