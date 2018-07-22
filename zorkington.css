@@ -1,3 +1,4 @@
+
 body {
     background: black;
     font-family: 'Press Start 2P', cursive;
@@ -40,4 +41,40 @@ button {
 #wrapper {
     width: 75%;
     margin: auto;
+}
+@media only screen and (max-device-width: 480px){
+    h1 {
+        color: white;
+        font-family: 'Press Start 2P', cursive;
+        font-size: 70pt;
+        text-align:center;
+        margin:auto;
+    }
+    #playerInput {
+        font-size: 16pt;
+        width: 100%;
+        margin: 20px 20px 20px -40px;
+        height: 200px;
+        line-height: 1.5em;
+    }
+    #log {
+        font-size: 16pt;
+        border-style: solid;
+        border-width: 2px;
+        border-color: red;
+        overflow: auto;
+        scroll-behavior: auto;
+        scroll-snap-type: proximity;
+        width: 100%;
+        padding: 30px;
+        line-height: 1.5em;
+        margin: 40px 20px 20px -40px;
+        height: 800px;
+    }
+    button {
+        height: 150px;
+        width: 200px;
+        margin: 0 50px 0 50px;
+        font-size: 36px;
+    }
 }
