@@ -1,0 +1,43 @@
+body {
+    background: black;
+    font-family: 'Press Start 2P', cursive;
+    color: white;
+}
+h1 {
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 70pt;
+    text-align:center;
+    margin:auto;
+}
+#playerInput {
+    font-size: 16pt;
+    width: 103%;
+    margin: 20px 20px 20px -40px;
+    height: 100px;
+}
+#buttons {
+    text-align: center;
+}
+button {
+    height: 50px;
+    width: 100px;
+    margin: 0 100px 0 100px;
+}
+#log {
+    font-size: 16pt;
+    border-style: solid;
+    border-width: 2px;
+    border-color: red;
+    overflow: auto;
+    scroll-behavior: auto;
+    scroll-snap-type: proximity;
+    width: 100%;
+    padding: 20px;
+    margin: 10px 20px 20px -40px;
+    height: 280px;
+}
+#wrapper {
+    width: 75%;
+    margin: auto;
+}
