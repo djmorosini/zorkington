@@ -18,7 +18,7 @@ let rooms = {
     },
     '182 Main St. - Foyer': {
         canChangeTo: ["182 Main st."],
-        'description': "You are in a foyer. Or maybe it\'s an antechamber. Or a vestibule. Or an entryway. Or an atrium. Or a narthex. But let\'s forget all that fancy flatlander vocabulary, and just call it a foyer. In Vermont, this is pronounced 'FO-ee-yurr'. A copy of Seven Days lies in a corner. A set of stairs leads up to another floor. A door leads outside.",
+        'description': "You are in a foyer. Or maybe it\'s an antechamber. Or a vestibule. Or an entryway. Or an atrium. Or a narthex. But let\'s forget all that fancy flatlander vocabulary, and just call it a foyer. In Vermont, this is pronounced 'FO-ee-yurr'. A set of stairs leads up to another floor. A door leads outside.",
         'inventory': ['Seven Days']
     }
 }
@@ -93,15 +93,16 @@ function mainGame(chunk) {
     say('Current location: ' + currentRoom + '\n')
     let playerInput = chunk.toString().trim().toLowerCase();
     let firstWordOfInput = playerInput.split(' ').shift().toString()
-    say("\n")
 
     if (potentialCommands.checkInventory.includes(playerInput)) {
         inventory()
-    } else if (playerInput == "look around") {
+    } else if (playerInput === "look around") {
         lookAround();
     } else if (potentialCommands.drop.includes(firstWordOfInput)) {
         drop(playerInput);
     } else if (potentialCommands.take.includes(firstWordOfInput)) {
+        take(playerInput)
+    } else if (playerInput.includes(potentialCommands.lookAt)) {
         take(playerInput)
     } else if (currentRoom == "182 Main st.") {
 
@@ -125,7 +126,7 @@ function changeRoom(newRoom) {
     let validTransitions = rooms[currentRoom].canChangeTo;
     if (validTransitions.includes(newRoom)) {
         currentRoom = newRoom;
-        say('Current room: ' + currentRoom + "\n" + rooms[currentRoom]['description'] + "\n")
+        say('Current room: ' + currentRoom + "\n\n" + rooms[currentRoom]['description'] + "\n")
     } else {
         say("Invalid state transition attempted - from " + currentRoom + " to " + newRoom);
     }
@@ -142,7 +143,7 @@ function mainStActions(playerInput) {
         interactables.door['open']()
     } else if (playerInput.startsWith('key in') || playerInput.startsWith('enter code')) {
         if (key == playerInput.match('12345')) {
-            say('Success! The door opens. You enter the foyer and the door shuts behind you.');
+            say('Success! The door opens. You enter the foyer and the door shuts behind you.\n');
             changeRoom("182 Main St. - Foyer");
         } else {
             say('Bzzzzt! The door is still locked.');
