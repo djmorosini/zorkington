@@ -46,20 +46,23 @@ let items = {
         'onPickUp': 'SWEET! 25 CENTS!'
     }
 }
-
-function newGame() {
-    log.innerHTML = ''
-    clearInput()
-    startGame();
+function startGame() {
+    let playerInputField = document.getElementById('playerInput')
+    let log = document.getElementById('log')
+    currentRoom = "182 Main st."
+    interactables = rooms[currentRoom]['interactible items'];
+    key = "12345"
+    doorLocked = true
+    playerInventory = []
+    rooms['182 Main st.'].inventory = ['dog poop', 'quarter']
+    rooms['182 Main St. - Foyer'].inventory = ['a copy of Seven Days']
+    log.innerText = currentRoom + "\n\n" + rooms[currentRoom]["description"]
+    playerInputField.value = ''
 }
 function submit() {
     let playerInputField = document.getElementById('playerInput')
     let playerInput = playerInputField.value
-    clearInput()
     mainGame(playerInput)
-}
-function clearInput() {
-    let playerInputField = document.getElementById('playerInput')
     playerInputField.value = ''
 }
 function listenForEnter() {
@@ -69,16 +72,6 @@ function listenForEnter() {
             submit();
         }
     })
-}
-function startGame() {
-    currentRoom = "182 Main st."
-    interactables = rooms[currentRoom]['interactible items'];
-    key = "12345"
-    doorLocked = true
-    playerInventory = []
-    rooms['182 Main st.'].inventory = ['dog poop', 'quarter']
-    rooms['182 Main St. - Foyer'].inventory = ['a copy of Seven Days']
-    log.innerText += currentRoom + "\n\n" + rooms[currentRoom]["description"]
 }
 function mainGame(chunk) {
     log.innerText = 'Current location: ' + currentRoom + '\n\n'
