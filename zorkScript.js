@@ -54,7 +54,6 @@ function newGame() {
     startGame();
     let playerInputField = document.getElementById('playerInput')
     playerInputField.value = ''
-    say(currentRoom + "\n" + rooms[currentRoom]["description"])
 }
 function submit() {
     let playerInputField = document.getElementById('playerInput')
@@ -86,6 +85,7 @@ function startGame() {
     key = "12345"
     doorLocked = true
     playerInventory = []
+    say(currentRoom + "\n\n" + rooms[currentRoom]["description"])
 }
 function mainGame(chunk) {
     log = document.getElementById('log')
@@ -101,8 +101,6 @@ function mainGame(chunk) {
     } else if (potentialCommands.drop.includes(firstWordOfInput)) {
         drop(playerInput);
     } else if (potentialCommands.take.includes(firstWordOfInput)) {
-        take(playerInput)
-    } else if (playerInput.includes(potentialCommands.lookAt)) {
         take(playerInput)
     } else if (currentRoom == "182 Main st.") {
 

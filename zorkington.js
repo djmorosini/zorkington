@@ -8,17 +8,7 @@ let rooms = {
                 'description': 'The door is locked. There is a keypad on the handle.',
                 'open': function () {
                     {
-                        console.log('The door is locked. There is a keypad on the handle. What will you enter into the keypad?');
-                        process.stdin.once('data', (code) => {
-                            code = code.toString().trim()
-                            console.log(code)
-                            if (key == code.match('12345')) {
-                                console.log('Success! The door opens. You enter the foyer and the door shuts behind you.');
-                                changeRoom("182 Main St. - Foyer");
-                            } else {
-                                console.log('Bzzzzt! The door is still locked.'); //still needs some debugging :(
-                            }
-                        })
+                        log.innerText += 'The door is locked. There is a keypad on the handle. What will you enter into the keypad?'
                     }
                 }
             }
@@ -27,8 +17,8 @@ let rooms = {
     },
     '182 Main St. - Foyer': {
         canChangeTo: ["182 Main st."],
-        'description': "You are in a foyer. Or maybe it\'s an antechamber. Or a vestibule. Or an entryway. Or an atrium. Or a narthex. But let\'s forget all that fancy flatlander vocabulary, and just call it a foyer. In Vermont, this is pronounced 'FO-ee-yurr'. A copy of Seven Days lies in a corner. A set of stairs leads up to another floor. A door leads outside.",
-        'inventory': ['Seven Days']
+        'description': "You are in a foyer. Or maybe it\'s an antechamber. Or a vestibule. Or an entryway. Or an atrium. Or a narthex. But let\'s forget all that fancy flatlander vocabulary, and just call it a foyer. In Vermont, this is pronounced 'FO-ee-yurr'. A set of stairs leads up to another floor. A door leads outside.",
+        'inventory': ['a copy of Seven Days']
     }
 }
 
@@ -40,7 +30,7 @@ potentialCommands = {
 }
 
 let items = {
-    'Seven Days': {
+    'a copy of Seven Days': {
         'alternate names': ['paper', 'seven days', 'Seven Days', 'Paper', 'newspaper', 'days', 'Days'],
         'description': "Vermont's Alt-Weekly",
         'onPickUp': 'You pick up the paper and leaf through it looking for comics and ignoring the articles, just like everybody else does.'
@@ -56,23 +46,48 @@ let items = {
         'onPickUp': 'SWEET! 25 CENTS!'
     }
 }
-let currentRoom = "182 Main st."
-let interactables = rooms[currentRoom]['interactible items'];
-let key = "12345"
-let doorLocked = true
-let playerInventory = []
 
-console.log(currentRoom + "\n" + rooms[currentRoom]["description"])
-
-process.stdin.on('data', (chunk) => {
-    console.log('Current location: ' + currentRoom + '\n')
-    let playerInput = chunk.toString().trim();
+function newGame() {
+    log.innerHTML = ''
+    clearInput()
+    startGame();
+}
+function submit() {
+    let playerInputField = document.getElementById('playerInput')
+    let playerInput = playerInputField.value
+    clearInput()
+    mainGame(playerInput)
+}
+function clearInput() {
+    let playerInputField = document.getElementById('playerInput')
+    playerInputField.value = ''
+}
+function listenForEnter() {
+    let playerInputField = document.getElementById('playerInput')
+    playerInputField.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            submit();
+        }
+    })
+}
+function startGame() {
+    currentRoom = "182 Main st."
+    interactables = rooms[currentRoom]['interactible items'];
+    key = "12345"
+    doorLocked = true
+    playerInventory = []
+    rooms['182 Main st.'].inventory = ['dog poop', 'quarter']
+    rooms['182 Main St. - Foyer'].inventory = ['a copy of Seven Days']
+    log.innerText += currentRoom + "\n\n" + rooms[currentRoom]["description"]
+}
+function mainGame(chunk) {
+    log.innerText = 'Current location: ' + currentRoom + '\n\n'
+    playerInput = chunk.toString().trim().toLowerCase();
     let firstWordOfInput = playerInput.split(' ').shift().toString()
-    console.log("\n")
 
     if (potentialCommands.checkInventory.includes(playerInput)) {
         inventory()
-    } else if (playerInput == "look around") {
+    } else if (playerInput === "look around") {
         lookAround();
     } else if (potentialCommands.drop.includes(firstWordOfInput)) {
         drop(playerInput);
@@ -86,12 +101,13 @@ process.stdin.on('data', (chunk) => {
 
         foyerActions(playerInput);
     }
-});
+}
+
 function lookAround() {
-    console.log(rooms[currentRoom]["description"])
+    log.innerText += rooms[currentRoom]["description"] + '\n'
 
     if (rooms[currentRoom]['inventory'].length > 0) {
-        console.log(" You see " + rooms[currentRoom]['inventory'] + ".");
+        log.innerText += 'You see ' + rooms[currentRoom]['inventory'] + '.\n'
     }
 }
 
@@ -99,9 +115,9 @@ function changeRoom(newRoom) {
     let validTransitions = rooms[currentRoom].canChangeTo;
     if (validTransitions.includes(newRoom)) {
         currentRoom = newRoom;
-        console.log('\nCurrent room: ' + currentRoom + "\n" + rooms[currentRoom]['description'] + "\n")
+        log.innerText += 'Current location: ' + currentRoom + '\n\n' + rooms[currentRoom]['description']
     } else {
-        console.log("Invalid state transition attempted - from " + currentRoom + " to " + newRoom);
+        log.innerText += 'Invalid state transition attempted - from ' + currentRoom + " to " + newRoom
     }
 }
 
@@ -109,40 +125,41 @@ function changeRoom(newRoom) {
 
 function mainStActions(playerInput) {
     if (playerInput == "read sign") {
-        console.log('The sign says "Welcome to Burlington Code Academy! Come on up to the second floor. If the door is locked, use the code 12345."');
+        log.innerText += 'The sign says "Welcome to Burlington Code Academy! Come on up to the second floor. If the door is locked, use the code 12345."'
     } else if (playerInput == "take sign") {
-        console.log("That would be selfish. How will other students find their way?");
-    } else if (playerInput == "open door") {    //Here's an example of calling that function on the door
+        log.innerText += 'That would be selfish. How will other students find their way?'
+    } else if (playerInput == "open door") {    // Here's an example of calling that function on the door
         interactables.door['open']()
     } else if (playerInput.startsWith('key in') || playerInput.startsWith('enter code')) {
         if (key == playerInput.match('12345')) {
-            console.log('Success! The door opens. You enter the foyer and the door shuts behind you.');
+            log.innerText = 'Success! The door opens. You enter the foyer and the door shuts behind you.\n\n'
             changeRoom("182 Main St. - Foyer");
         } else {
-            console.log('Bzzzzt! The door is still locked.');
+            log.innerText += 'Bzzzzt! The door is still locked.'
         }
     } else if (playerInput === '') {
-        console.log('Please provide a command.')
+        log.innerText += 'Please provide a command.'
     } else {
-        console.log("Sorry, I don't know how to " + playerInput + ".");
+        log.innerText += "Sorry, I don't know how to " + playerInput + "."
     }
 }
 
 function foyerActions(playerInput) {
     if (playerInput == "go back") {
+        log.innerText = 'You walk back down the stairs and walk out the door.\n\n'
         changeRoom("182 Main st.")
     } else {
-        console.log("Sorry, I don't know how to " + playerInput + ".");
+        log.innerText += "Sorry, I don't know how to " + playerInput + "."
     }
 }
 
 function inventory() {
     if (playerInventory.length <= 0) {
-        console.log("You are not carrying anything!")
+        log.innerText += '"You are not carrying anything!'
     } else {
-        console.log('You are carrying:')
+        log.innerText += 'You are carrying: '
         for (let item of playerInventory) {
-            console.log(item + ", " + items[item]['description'])
+            log.innerText += ' ' + item + ", " + items[item]['description']
         }
     }
 }
@@ -158,9 +175,9 @@ function drop(playerInput) {
         let itemIndex = playerInventory.indexOf(itemName)
         let item = playerInventory.splice(itemIndex, 1).toString()
         rooms[currentRoom]["inventory"].push(item)
-        console.log("You dropped " + item)
+        log.innerText += 'You dropped ' + item
     } else {
-        console.log("I can't drop that now.")
+        log.innerText += "I can't drop that now."
     }
 }
 
@@ -175,8 +192,8 @@ function take(playerInput) {
         let itemIndex = rooms[currentRoom]["inventory"].indexOf(itemName)
         let item = rooms[currentRoom]["inventory"].splice(itemIndex, 1).toString()
         playerInventory.push(item)
-        console.log(items[item]['onPickUp'])
+        log.innerText += items[item]['onPickUp']
     } else {
-        console.log("I can't take that now.")
+        log.innerText += "I can't take that now."
     }
 }
