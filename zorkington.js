@@ -86,6 +86,11 @@ function mainStActions(action) {
     } else if (action == "take seven days" || action == 'take paper') {
         take('Seven Days')
         
+
+        
+
+
+        
     } else if (action == "read sign") {
         console.log('The sign says "Welcome to Burlington Code Academy! Come on up to the second floor. If the door is locked, use the code 12345."');
     } else if (action == "take sign") {
