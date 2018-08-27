@@ -114,31 +114,6 @@ function changeRoom(newRoom) {
     }
 }
 
-
-function mainStActions(action) {
-    if (action == "drop paper" || action == "drop seven days") {
-        drop("Seven Days")
-    } else if (action == "take seven days" || action == 'take paper') {
-        take('Seven Days')
-        
-
-        
-
-
-        
-    } else if (action == "read sign") {
-        console.log('The sign says "Welcome to Burlington Code Academy! Come on up to the second floor. If the door is locked, use the code 12345."');
-    } else if (action == "take sign") {
-        console.log("That would be selfish. How will other students find their way?");
-    } else if (action == "open door") {
-        if (doorLocked) {
-            console.log('The door is locked. There is a keypad on the handle.');
-        }
-    } else if (action.startsWith('key in') || action.startsWith('enter code')) {
-        if (key == action.match('12345')) {
-            console.log('Success! The door opens. You enter the foyer and the door shuts behind you.');
-            doorLocked = false;
-
 function mainStActions(playerInput) {
     if (playerInput == "read sign") {
         log.innerText += 'The sign says "Welcome to Burlington Code Academy! Come on up to the second floor. If the door is locked, use the code 12345."'
